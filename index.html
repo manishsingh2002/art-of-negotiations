@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Art of Negotiation</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,sans-serif;background:#f8f7f4;color:#1a1a18;line-height:1.6;}
+.app{max-width:740px;margin:0 auto;padding:2rem 1rem 4rem;}
+
+h1{font-size:22px;font-weight:500;margin-bottom:4px;}
+.tagline{font-size:13px;color:#5f5e5a;margin-bottom:2rem;}
+
+/* NAV */
+.nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.75rem;}
+.ntab{background:transparent;border:1px solid #ccc;border-radius:8px;padding:6px 13px;font-size:12px;font-weight:500;color:#5f5e5a;cursor:pointer;transition:all .15s;}
+.ntab:hover{background:#eee;}
+.ntab.on{background:#1a1a18;color:#f8f7f4;border-color:#1a1a18;}
+
+.panel{display:none;animation:fadeIn .2s ease;}
+.panel.on{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.sec-label{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:1rem;}
+
+/* PRINCIPLE CARDS */
+.prin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:1.5rem;}
+.pcard{background:#fff;border:1px solid #e0dfdb;border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .15s;position:relative;}
+.pcard:hover{border-color:#aaa;transform:translateY(-1px);}
+.pcard.sel{border:2px solid #1a1a18;}
+.pcard-num{font-size:10px;font-weight:500;color:#aaa;margin-bottom:6px;letter-spacing:.05em;}
+.pcard-title{font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:4px;}
+.pcard-hook{font-size:11px;color:#5f5e5a;line-height:1.45;}
+.expand-box{background:#f1efeb;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;border-left:3px solid #1a1a18;}
+.expand-title{font-size:13px;font-weight:500;margin-bottom:10px;}
+.expand-row{display:flex;gap:8px;margin-bottom:7px;font-size:12px;color:#3d3d3a;line-height:1.55;}
+.expand-dot{width:5px;height:5px;border-radius:50%;background:#1a1a18;flex-shrink:0;margin-top:6px;}
+.expand-example{background:#fff;border-radius:8px;padding:10px 12px;margin-top:10px;font-size:12px;color:#1a1a18;line-height:1.6;font-style:italic;}
+.expand-example-label{font-size:10px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:#888;margin-bottom:5px;font-style:normal;}
+
+/* FRAMEWORKS */
+.fw-block{background:#fff;border:1px solid #e0dfdb;border-radius:12px;padding:1rem 1.25rem;margin-bottom:12px;}
+.fw-title{font-size:14px;font-weight:500;margin-bottom:6px;}
+.fw-desc{font-size:12px;color:#5f5e5a;line-height:1.6;margin-bottom:10px;}
+.fw-steps{display:flex;flex-direction:column;gap:6px;}
+.fw-step{display:flex;gap:10px;font-size:12px;color:#3d3d3a;line-height:1.5;}
+.fw-step-num{width:20px;height:20px;border-radius:50%;background:#f1efeb;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px;}
+.fw-badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;background:#f1efeb;color:#444;margin-bottom:8px;}
+
+/* TACTICS */
+.tac-item{border-bottom:1px solid #eee;padding:13px 0;cursor:pointer;}
+.tac-item:last-child{border-bottom:none;}
+.tac-header{display:flex;justify-content:space-between;align-items:center;}
+.tac-title{font-size:13px;font-weight:500;color:#1a1a18;}
+.tac-tag{font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;}
+.tag-attack{background:#FAEEDA;color:#633806;}
+.tag-defend{background:#E1F5EE;color:#085041;}
+.tag-both{background:#EEEDFE;color:#3C3489;}
+.tac-arrow{font-size:12px;color:#aaa;transition:transform .2s;margin-left:8px;}
+.tac-arrow.open{transform:rotate(90deg);}
+.tac-body{display:none;padding-top:10px;}
+.tac-body.open{display:block;}
+.tac-what{font-size:12px;color:#5f5e5a;line-height:1.6;margin-bottom:8px;}
+.tac-use{background:#f1efeb;border-radius:8px;padding:9px 11px;font-size:12px;color:#1a1a18;line-height:1.6;}
+.tac-use-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:#888;margin-bottom:4px;}
+.tac-counter{background:#fff;border:1px solid #e0dfdb;border-radius:8px;padding:9px 11px;font-size:12px;color:#3d3d3a;line-height:1.6;margin-top:6px;}
+.tac-counter-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:#085041;margin-bottom:4px;}
+
+/* SIMULATOR */
+.sim-wrap{background:#fff;border:1px solid #e0dfdb;border-radius:12px;overflow:hidden;margin-bottom:1.25rem;}
+.sim-header{background:#1a1a18;padding:12px 16px;display:flex;align-items:center;gap:10px;}
+.sim-avatar{width:32px;height:32px;border-radius:50%;background:#444;display:flex;align-items:center;justify-content:center;font-size:12px;color:#f8f7f4;font-weight:500;flex-shrink:0;}
+.sim-name{font-size:13px;font-weight:500;color:#f8f7f4;}
+.sim-role{font-size:11px;color:#aaa;}
+.sim-scene{padding:14px 16px;border-bottom:1px solid #eee;}
+.sim-scene-label{font-size:10px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:#888;margin-bottom:6px;}
+.sim-scene-text{font-size:13px;color:#1a1a18;line-height:1.6;}
+.sim-chat{padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:120px;}
+.msg{max-width:80%;padding:10px 13px;border-radius:10px;font-size:12px;line-height:1.6;}
+.msg-them{background:#f1efeb;color:#1a1a18;align-self:flex-start;border-radius:10px 10px 10px 3px;}
+.msg-you{background:#1a1a18;color:#f8f7f4;align-self:flex-end;border-radius:10px 10px 3px 10px;}
+.msg-label{font-size:10px;color:#888;margin-bottom:3px;}
+.sim-options{padding:12px 16px;border-top:1px solid #eee;display:flex;flex-direction:column;gap:6px;}
+.sim-opt{background:#f8f7f4;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:12px;color:#1a1a18;cursor:pointer;text-align:left;transition:all .15s;line-height:1.5;}
+.sim-opt:hover{background:#eee;border-color:#aaa;}
+.sim-opt.good{border-color:#0F6E56;background:#E1F5EE;color:#04342C;}
+.sim-opt.bad{border-color:#A32D2D;background:#FCEBEB;color:#501313;}
+.sim-opt.neutral{border-color:#185FA5;background:#E6F1FB;color:#042C53;}
+.sim-result{padding:12px 16px;border-top:1px solid #eee;font-size:12px;line-height:1.6;display:none;}
+.sim-result.show{display:block;}
+.result-good{background:#E1F5EE;color:#04342C;border-radius:8px;padding:10px 12px;}
+.result-bad{background:#FCEBEB;color:#501313;border-radius:8px;padding:10px 12px;}
+.result-neutral{background:#E6F1FB;color:#042C53;border-radius:8px;padding:10px 12px;}
+.sim-next{margin-top:10px;background:#1a1a18;color:#f8f7f4;border:none;border-radius:8px;padding:8px 16px;font-size:12px;cursor:pointer;transition:opacity .15s;}
+.sim-next:hover{opacity:.85;}
+
+/* SCRIPTS */
+.script-scenario{background:#fff;border:1px solid #e0dfdb;border-radius:12px;margin-bottom:12px;overflow:hidden;}
+.script-header{padding:12px 16px;background:#f8f7f4;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.script-header-title{font-size:13px;font-weight:500;color:#1a1a18;}
+.script-context{font-size:11px;color:#5f5e5a;}
+.script-content{padding:14px 16px;display:none;}
+.script-content.open{display:block;}
+.script-line{display:flex;gap:10px;margin-bottom:10px;}
+.script-speaker{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;min-width:44px;padding-top:2px;flex-shrink:0;}
+.sp-them{color:#A32D2D;}
+.sp-you{color:#085041;}
+.sp-note{color:#888;}
+.script-line-text{font-size:12px;color:#1a1a18;line-height:1.6;}
+.script-note-text{font-size:11px;color:#888;font-style:italic;line-height:1.5;}
+
+/* LAWS */
+.law-grid{display:flex;flex-direction:column;gap:10px;}
+.law-item{display:grid;grid-template-columns:40px 1fr;gap:12px;background:#fff;border:1px solid #e0dfdb;border-radius:12px;padding:14px 16px;}
+.law-num{font-size:22px;font-weight:500;color:#ddd;line-height:1;}
+.law-title{font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:4px;}
+.law-text{font-size:12px;color:#5f5e5a;line-height:1.6;}
+.law-apex{font-size:11px;color:#534AB7;margin-top:6px;font-style:italic;}
+
+/* BTNS */
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:1.5rem;}
+.ask-btn{background:#fff;border:1px solid #ccc;border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer;transition:background .15s;color:#1a1a18;}
+.ask-btn:hover{background:#f1efeb;}
+</style>
+</head>
+<body>
+<div class="app">
+<h2 class="sr-only">The Art of Negotiation — interactive masterclass covering principles, frameworks, tactics, real-world simulations, and scripts</h2>
+<h1>The art of negotiation</h1>
+<p class="tagline">Six modules · From psychology to real-world execution</p>
+
+<div class="nav">
+  <button class="ntab on" onclick="sw(0)">1 · Core principles</button>
+  <button class="ntab" onclick="sw(1)">2 · Frameworks</button>
+  <button class="ntab" onclick="sw(2)">3 · Power tactics</button>
+  <button class="ntab" onclick="sw(3)">4 · Live simulator</button>
+  <button class="ntab" onclick="sw(4)">5 · Word-for-word scripts</button>
+  <button class="ntab" onclick="sw(5)">6 · The 10 laws</button>
+</div>
+
+<!-- ═══ PANEL 0: PRINCIPLES ═══ -->
+<div class="panel on" id="p0">
+<p class="sec-label">9 principles — click any to go deep</p>
+<div class="prin-grid">
+  <div class="pcard" onclick="showPrin(0)"><div class="pcard-num">01</div><div class="pcard-title">Information is leverage</div><div class="pcard-hook">Whoever knows more, wins more.</div></div>
+  <div class="pcard" onclick="showPrin(1)"><div class="pcard-num">02</div><div class="pcard-title">Never negotiate against yourself</div><div class="pcard-hook">Silence is a weapon, not a gap.</div></div>
+  <div class="pcard" onclick="showPrin(2)"><div class="pcard-num">03</div><div class="pcard-title">Anchor first, anchor high</div><div class="pcard-hook">The first number sets the battlefield.</div></div>
+  <div class="pcard" onclick="showPrin(3)"><div class="pcard-num">04</div><div class="pcard-title">BATNA is your true power</div><div class="pcard-hook">Your walk-away is your real negotiating card.</div></div>
+  <div class="pcard" onclick="showPrin(4)"><div class="pcard-num">05</div><div class="pcard-title">Make them feel heard first</div><div class="pcard-hook">Tactical empathy before anything else.</div></div>
+  <div class="pcard" onclick="showPrin(5)"><div class="pcard-num">06</div><div class="pcard-title">Never split the difference</div><div class="pcard-hook">50-50 means both sides left value behind.</div></div>
+  <div class="pcard" onclick="showPrin(6)"><div class="pcard-num">07</div><div class="pcard-title">Time is a weapon</div><div class="pcard-hook">Deadlines move people. Create them.</div></div>
+  <div class="pcard" onclick="showPrin(7)"><div class="pcard-num">08</div><div class="pcard-title">Framing controls perception</div><div class="pcard-hook">Same deal. Different frame. Different outcome.</div></div>
+  <div class="pcard" onclick="showPrin(8)"><div class="pcard-num">09</div><div class="pcard-title">Let them say "no" first</div><div class="pcard-hook">"No" makes people feel safe. Safe people deal.</div></div>
+</div>
+<div class="expand-box" id="prin-detail" style="display:none;"></div>
+<div class="btns">
+  <button class="ask-btn" onclick="sendPrompt('Give me 10 advanced negotiation principles beyond these 9')">More principles ↗</button>
+  <button class="ask-btn" onclick="sendPrompt('How do I build a strong BATNA before negotiating with a client?')">Build my BATNA ↗</button>
+</div>
+</div>
+
+<!-- ═══ PANEL 1: FRAMEWORKS ═══ -->
+<div class="panel" id="p1">
+<p class="sec-label">Battle-tested negotiation frameworks</p>
+
+<div class="fw-block">
+  <div class="fw-badge">Harvard method</div>
+  <div class="fw-title">Principled negotiation (Fisher & Ury)</div>
+  <div class="fw-desc">The foundation of modern negotiation. Separate the people from the problem. Focus on interests, not positions. The goal is mutual gain, not victory over the other side.</div>
+  <div class="fw-steps">
+    <div class="fw-step"><div class="fw-step-num">1</div><div><strong style="font-weight:500">Separate people from problem.</strong> Attack the issue, never the person. "The invoice timeline isn't working for either of us" not "You're being unreasonable."</div></div>
+    <div class="fw-step"><div class="fw-step-num">2</div><div><strong style="font-weight:500">Focus on interests, not positions.</strong> Ask why they want what they want. A client who says "₹2k/mo max" actually wants low financial risk — that's an interest you can address differently.</div></div>
+    <div class="fw-step"><div class="fw-step-num">3</div><div><strong style="font-weight:500">Invent options for mutual gain.</strong> Generate multiple possibilities before settling on one. "What if we did a 3-month trial at a lower rate with a commitment clause?"</div></div>
+    <div class="fw-step"><div class="fw-step-num">4</div><div><strong style="font-weight:500">Insist on objective criteria.</strong> Anchor to market data, standards, or precedent — not emotion. "Industry standard for this software tier is ₹4,000–₹7,000/mo. I'm proposing ₹5,000."</div></div>
+  </div>
+</div>
+
+<div class="fw-block">
+  <div class="fw-badge">FBI method</div>
+  <div class="fw-title">The Voss framework (Chris Voss — Never Split the Difference)</div>
+  <div class="fw-desc">Built for high-stakes hostage negotiation. Adapted for business. Focuses on emotional intelligence, not logic. People make decisions emotionally and justify rationally.</div>
+  <div class="fw-steps">
+    <div class="fw-step"><div class="fw-step-num">1</div><div><strong style="font-weight:500">Tactical empathy.</strong> Identify and verbalize their emotional state. "It sounds like you've been burned by software vendors before." Makes them feel understood before you've agreed to anything.</div></div>
+    <div class="fw-step"><div class="fw-step-num">2</div><div><strong style="font-weight:500">Mirroring.</strong> Repeat the last 1–3 words they said as a question. They said: "We need a solution by next quarter." You say: "By next quarter?" Silence. They fill it with more information.</div></div>
+    <div class="fw-step"><div class="fw-step-num">3</div><div><strong style="font-weight:500">Labeling.</strong> "It seems like…" / "It sounds like…" / "It looks like…" Label emotions before addressing the issue. Diffuses tension without conceding anything.</div></div>
+    <div class="fw-step"><div class="fw-step-num">4</div><div><strong style="font-weight:500">Calibrated questions.</strong> Never "yes/no" questions. "How am I supposed to do that?" / "What would need to happen for this to work?" Forces them to solve your problem for you.</div></div>
+    <div class="fw-step"><div class="fw-step-num">5</div><div><strong style="font-weight:500">The "that's right" moment.</strong> When they say "that's right" (not "you're right"), you've achieved genuine understanding. That's when real movement begins.</div></div>
+  </div>
+</div>
+
+<div class="fw-block">
+  <div class="fw-badge">Sales & SaaS context</div>
+  <div class="fw-title">The SPIN framework (Rackham)</div>
+  <div class="fw-desc">Designed for complex B2B sales negotiations. Works perfectly for Apex CRM client conversations. Leads the other person to your solution through their own words.</div>
+  <div class="fw-steps">
+    <div class="fw-step"><div class="fw-step-num">S</div><div><strong style="font-weight:500">Situation questions.</strong> Establish context. "How many people manage your invoicing currently?" "What tools do you use today?"</div></div>
+    <div class="fw-step"><div class="fw-step-num">P</div><div><strong style="font-weight:500">Problem questions.</strong> Surface the pain. "What's the most frustrating part of that process?" "How often do invoices get delayed?"</div></div>
+    <div class="fw-step"><div class="fw-step-num">I</div><div><strong style="font-weight:500">Implication questions.</strong> Amplify the cost of the problem. "When invoices are delayed, how does that affect your cash flow?" "What does your accountant spend time on because of this?"</div></div>
+    <div class="fw-step"><div class="fw-step-num">N</div><div><strong style="font-weight:500">Need-payoff questions.</strong> Let them articulate your solution. "If you could cut that reconciliation time by 70%, how much would that mean for your team?" They sell themselves.</div></div>
+  </div>
+</div>
+
+<div class="btns">
+  <button class="ask-btn" onclick="sendPrompt('Walk me through using the Voss framework in an Apex CRM pricing negotiation')">Apply Voss to Apex ↗</button>
+  <button class="ask-btn" onclick="sendPrompt('Give me a complete SPIN selling script for Apex CRM discovery calls')">SPIN script for Apex ↗</button>
+</div>
+</div>
+
+<!-- ═══ PANEL 2: TACTICS ═══ -->
+<div class="panel" id="p2">
+<p class="sec-label">Power tactics — how to use them and how to counter them</p>
+<div id="tac-list">
+
+<div class="tac-item" onclick="togTac(this)">
+  <div class="tac-header"><div class="tac-title">The flinch</div><div style="display:flex;align-items:center;gap:6px;"><span class="tac-tag tag-both">both</span><span class="tac-arrow">›</span></div></div>
+  <div class="tac-body">
+    <div class="tac-what">When the other side states a number, visibly react — a sharp exhale, a pause, "Hmm…" — before saying anything. This creates doubt in their mind about whether their number was too aggressive, and often causes them to soften their position before you've said a word.</div>
+    <div class="tac-use"><div class="tac-use-label">How to use it</div>Client says "₹2,000/mo maximum." You pause, exhale slightly, then say nothing for 3 seconds. Let the silence sit. Then: "That's quite a bit below where we'd need to be to make this work…" Don't fill the gap.</div>
+    <div class="tac-counter"><div class="tac-counter-label">How to counter it</div>Recognize the flinch for what it is — theatre. Stay calm. Don't reduce your number preemptively. Say: "I understand it seems high. Let me show you why the value is there." Then demonstrate, don't discount.</div>
+  </div>
+</div>
+
+<div class="tac-item" onclick="togTac(this)">
+  <div class="tac-header"><div class="tac-title">The anchor</div><div style="display:flex;align-items:center;gap:6px;"><span class="tac-tag tag-attack">offensive</span><span class="tac-arrow">›</span></div></div>
+  <div class="tac-body">
+    <div class="tac-what">The first number stated in any negotiation becomes the psychological reference point for everything that follows. Research shows all subsequent numbers gravitate toward the anchor, even when people try to rationally ignore it.</div>
+    <div class="tac-use"><div class="tac-use-label">How to use it</div>Always name a number first. Go higher than your target — not absurdly high (kills credibility), but 20–40% above where you'd be happy to land. For Apex pricing: if you want ₹5,000/mo, open with ₹8,000/mo. The final ₹5,500 feels like a win for them.</div>
+    <div class="tac-counter"><div class="tac-counter-label">How to counter it</div>Don't negotiate from their anchor. Explicitly reject it: "That number doesn't work as a starting point. Here's what the market looks like, and here's where we need to be." Re-anchor with your number before any discussion of movement.</div>
+  </div>
+</div>
+
+<div class="tac-item" onclick="togTac(this)">
+  <div class="tac-header"><div class="tac-title">Good cop / bad cop</div><div style="display:flex;align-items:center;gap:6px;"><span class="tac-tag tag-both">both</span><span class="tac-arrow">›</span></div></div>
+  <div class="tac-body">
+    <div class="tac-what">One person is warm and agreeable ("I really like this proposal"), the other is skeptical or demanding ("My partner thinks this is way overpriced"). The "good cop" creates rapport; the "bad cop" creates pressure. Together they move you toward concessions you wouldn't otherwise make.</div>
+    <div class="tac-use"><div class="tac-use-label">How to use it (solo version)</div>As a solo founder, use an imaginary "partner" or "board." "I'd love to do ₹3,000/mo, but my co-founder reviews all contracts and he won't approve anything below ₹5,000." Lets you be the good cop while an unnamed force holds the line.</div>
+    <div class="tac-counter"><div class="tac-counter-label">How to counter it</div>Name it out loud: "It sounds like you two have different views on this — which of you has final authority to make a decision?" Forces the real decision-maker to step forward and collapses the dynamic.</div>
+  </div>
+</div>
+
+<div class="tac-item" onclick="togTac(this)">
+  <div class="tac-header"><div class="tac-title">Deadline pressure</div><div style="display:flex;align-items:center;gap:6px;"><span class="tac-tag tag-attack">offensive</span><span class="tac-arrow">›</span></div></div>
+  <div class="tac-body">
+    <div class="tac-what">Artificial or real deadlines force decisions. People make concessions faster when time is running out. The key is making the deadline feel real and the consequence feel tangible.</div>
+    <div class="tac-use"><div class="tac-use-label">How to use it</div>"This pricing is valid through Friday — after that, our next onboarding batch starts and pricing will reflect the new rate." Or: "I have two other companies interested in this slot. I can hold it until Thursday." Real or structural — it creates urgency without desperation.</div>
+    <div class="tac-counter"><div class="tac-counter-label">How to counter it</div>Test the deadline. "What happens if we don't close by Friday?" If the answer is vague, it's artificial. Say: "I'd rather take a few more days and make the right decision than rush. Can we extend to next Wednesday?" Usually they say yes — proving the deadline was soft.</div>
+  </div>
+</div>
+
+<div class="tac-item" onclick="togTac(this)">
+  <div class="tac-header"><div class="tac-title">The nibble</div><div style="display:flex;align-items:center;gap:6px;"><span class="tac-tag tag-attack">offensive</span><span class="tac-arrow">›</span></div></div>
+  <div class="tac-body">
+    <div class="tac-what">After the deal is essentially agreed, ask for one small additional concession. The other party has emotionally committed to the deal and is in a "yes" state — they're highly unlikely to blow it up over a small add-on. This is how experienced negotiators extract the last bit of value.</div>
+    <div class="tac-use"><div class="tac-use-label">How to use it</div>After a client verbally agrees to ₹5,000/mo: "Great — and can we include onboarding setup and 1 month of data migration support in that?" They're already in yes-mode. The psychological cost of saying no to something small after agreeing to something big is high.</div>
+    <div class="tac-counter"><div class="tac-counter-label">How to counter it</div>"I'm happy to include that, but we'd need to revisit the base price. Nothing changes without something changing." Makes them choose: keep the price, or reopen the entire deal. They almost always drop the nibble.</div>
+  </div>
+</div>
+
+<div class="tac-item" onclick="togTac(this)">
+  <div class="tac-header"><div class="tac-title">Strategic silence</div><div style="display:flex;align-items:center;gap:6px;"><span class="tac-tag tag-defend">defensive</span><span class="tac-arrow">›</span></div></div>
+  <div class="tac-body">
+    <div class="tac-what">Most people are deeply uncomfortable with silence and will fill it — often with concessions, justifications, or information they didn't plan to reveal. The negotiator who can sit comfortably in silence has a massive structural advantage.</div>
+    <div class="tac-use"><div class="tac-use-label">How to use it</div>After you state your price or make a demand — stop talking. Completely. Even if it's 8, 10, 15 seconds of silence. The other person will almost always speak first, and what they say will tell you everything about where they really are.</div>
+    <div class="tac-counter"><div class="tac-counter-label">How to counter it</div>Recognize silence as a tactic. Ask a question to break it on your terms: "What are your thoughts?" — you're still responding but you're not conceding. Never reduce a number just because silence followed it.</div>
+  </div>
+</div>
+
+<div class="tac-item" onclick="togTac(this)">
+  <div class="tac-header"><div class="tac-title">The higher authority</div><div style="display:flex;align-items:center;gap:6px;"><span class="tac-tag tag-defend">defensive</span><span class="tac-arrow">›</span></div></div>
+  <div class="tac-body">
+    <div class="tac-what">Claiming you need to check with someone else before committing. This gives you a genuine out, prevents in-the-moment pressure decisions, and lets you return with a harder position without personal conflict. Even if you ARE the final authority, using this tactic protects your position.</div>
+    <div class="tac-use"><div class="tac-use-label">How to use it</div>"I'm very interested in this — let me run it by my business partner/advisor and I'll come back to you by tomorrow." Buys time to think, research alternatives, and return with a firmer position. Cannot be pressured to decide on the spot.</div>
+    <div class="tac-counter"><div class="tac-counter-label">How to counter it</div>Before the negotiation begins, ask: "Are you the person who can make the final call today?" If yes, hold them to it. If they later invoke a higher authority, say: "I thought you had authority on this — what changed?"</div>
+  </div>
+</div>
+
+</div>
+<div class="btns">
+  <button class="ask-btn" onclick="sendPrompt('What tactics should I use when a client says Apex is too expensive compared to Zoho?')">Counter the Zoho objection ↗</button>
+  <button class="ask-btn" onclick="sendPrompt('Teach me advanced anchoring techniques for SaaS pricing negotiations')">Advanced anchoring ↗</button>
+</div>
+</div>
+
+<!-- ═══ PANEL 3: SIMULATOR ═══ -->
+<div class="panel" id="p3">
+<p class="sec-label">Real-world negotiation simulator — choose your response</p>
+
+<div class="sim-wrap" id="sim-box">
+  <div class="sim-header">
+    <div class="sim-avatar">RK</div>
+    <div><div class="sim-name">Rajesh Kumar</div><div class="sim-role">Owner, Mehta Traders · Prospect</div></div>
+  </div>
+  <div class="sim-scene">
+    <div class="sim-scene-label">Scenario</div>
+    <div class="sim-scene-text">You just finished a 25-minute demo of Apex CRM for Rajesh. He manages invoicing and supplier records for a trading company with 18 staff. He was engaged throughout the demo. Now comes the pricing conversation.</div>
+  </div>
+  <div class="sim-chat" id="sim-chat">
+    <div>
+      <div class="msg-label" style="font-size:10px;color:#888;margin-bottom:3px;">Rajesh</div>
+      <div class="msg msg-them">Honestly the demo was impressive. Our current setup is a mess. But ₹5,000 a month is a lot for us right now. Can you do ₹2,000?</div>
+    </div>
+  </div>
+  <div class="sim-options" id="sim-opts">
+    <div style="font-size:11px;color:#888;margin-bottom:4px;">How do you respond?</div>
+    <button class="sim-opt" onclick="simAnswer(0)">A. "Sure, I can do ₹2,000 for the first 3 months to help you get started."</button>
+    <button class="sim-opt" onclick="simAnswer(1)">B. "₹2,000 isn't something we can work with — the minimum is ₹3,500. Let me explain what that covers."</button>
+    <button class="sim-opt" onclick="simAnswer(2)">C. "I hear you. Help me understand — what's making ₹5,000 feel like a stretch right now?"</button>
+  </div>
+  <div class="sim-result" id="sim-result"></div>
+</div>
+
+<div id="sim2" style="display:none;">
+<div class="sim-wrap">
+  <div class="sim-header">
+    <div class="sim-avatar">SP</div>
+    <div><div class="sim-name">Sunita Patel</div><div class="sim-role">Director, SP Staffing Solutions · Prospect</div></div>
+  </div>
+  <div class="sim-scene">
+    <div class="sim-scene-label">Scenario 2</div>
+    <div class="sim-scene-text">Sunita runs a staffing agency. She's comparing Apex to a competitor. You've just sent the proposal at ₹6,000/mo for the full HRMS + CRM suite.</div>
+  </div>
+  <div class="sim-chat">
+    <div>
+      <div class="msg-label" style="font-size:10px;color:#888;margin-bottom:3px;">Sunita</div>
+      <div class="msg msg-them">I've seen another system at ₹3,500/mo. It does most of what you showed me. Why should I pay almost double?</div>
+    </div>
+  </div>
+  <div class="sim-options" id="sim2-opts">
+    <div style="font-size:11px;color:#888;margin-bottom:4px;">How do you respond?</div>
+    <button class="sim-opt" onclick="sim2Answer(0)">A. "We can match ₹3,500 if that's what it takes to close this."</button>
+    <button class="sim-opt" onclick="sim2Answer(1)">B. "What system is that? Let me show you exactly where Apex does more."</button>
+    <button class="sim-opt" onclick="sim2Answer(2)">C. "That's a fair question. What are the 2–3 things most important to you in making this decision?"</button>
+  </div>
+  <div class="sim-result" id="sim2-result"></div>
+</div>
+</div>
+
+<div class="btns">
+  <button class="ask-btn" onclick="sendPrompt('Create 5 more Apex CRM negotiation scenarios with multiple choice responses and analysis')">More scenarios ↗</button>
+</div>
+</div>
+
+<!-- ═══ PANEL 4: SCRIPTS ═══ -->
+<div class="panel" id="p4">
+<p class="sec-label">Word-for-word scripts for real situations</p>
+
+<div class="script-scenario">
+  <div class="script-header" onclick="togScript(this)">
+    <div><div class="script-header-title">Pricing pushback — "It's too expensive"</div><div class="script-context">Works for Apex CRM, StockLens, any paid product</div></div>
+    <span style="font-size:12px;color:#aaa;">›</span>
+  </div>
+  <div class="script-content">
+    <div class="script-line"><span class="script-speaker sp-them">Them</span><span class="script-line-text">"This is more than we budgeted. Can you come down on price?"</span></div>
+    <div class="script-line"><span class="script-speaker sp-you">You</span><span class="script-line-text">"I appreciate you being direct. Help me understand — is it that the overall number is too high, or is it more about cash flow and what hits the account each month?"</span></div>
+    <div class="script-line"><span class="script-speaker sp-note">Note</span><span class="script-note-text">This separates two very different problems. A cash-flow issue → trial period, deferred start, or quarterly payment. A value issue → you need to build more case, not reduce price.</span></div>
+    <div class="script-line"><span class="script-speaker sp-them">Them</span><span class="script-line-text">"Honestly it's both — ₹5,000 is just a lot per month."</span></div>
+    <div class="script-line"><span class="script-speaker sp-you">You</span><span class="script-line-text">"I understand. Let me put it differently. You told me earlier your billing process wastes about 5 hours a week. At even a conservative ₹300/hour for your staff's time, that's ₹6,000 a month in waste. Apex costs ₹5,000. You're not spending money — you're recovering it."</span></div>
+    <div class="script-line"><span class="script-speaker sp-note">Note</span><span class="script-note-text">Use THEIR numbers from the discovery call. Never invent the ROI — they gave it to you. This is why the discovery call is non-negotiable.</span></div>
+    <div class="script-line"><span class="script-speaker sp-you">You</span><span class="script-line-text">"What I can do is give you the first 30 days free. You run your real operations through it, no risk. If it doesn't deliver that value — walk away. Fair?"</span></div>
+  </div>
+</div>
+
+<div class="script-scenario">
+  <div class="script-header" onclick="togScript(this)">
+    <div><div class="script-header-title">The stall — "Let me think about it"</div><div class="script-context">Most common deal-killer. Handle it immediately.</div></div>
+    <span style="font-size:12px;color:#aaa;">›</span>
+  </div>
+  <div class="script-content">
+    <div class="script-line"><span class="script-speaker sp-them">Them</span><span class="script-line-text">"This looks good. Let me think about it and I'll get back to you."</span></div>
+    <div class="script-line"><span class="script-speaker sp-you">You</span><span class="script-line-text">"Absolutely. Just so I can follow up usefully — what specifically do you need to think through? Is it the pricing, the features, or something else?"</span></div>
+    <div class="script-line"><span class="script-speaker sp-note">Note</span><span class="script-note-text">"Let me think about it" almost always means there's an unspoken objection. This question surfaces it. Whatever they say next is the real objection — handle that, not the stall.</span></div>
+    <div class="script-line"><span class="script-speaker sp-them">Them</span><span class="script-line-text">"Mainly I need to check with my partner."</span></div>
+    <div class="script-line"><span class="script-speaker sp-you">You</span><span class="script-line-text">"That makes complete sense. Would it be helpful if I joined a quick 15-minute call with both of you? I find it saves time compared to playing phone tag, and I can answer both your questions directly."</span></div>
+    <div class="script-line"><span class="script-speaker sp-note">Note</span><span class="script-note-text">Always try to get into the room with the real decision maker. A second call with the partner present is 3x more likely to close than an email chain.</span></div>
+  </div>
+</div>
+
+<div class="script-scenario">
+  <div class="script-header" onclick="togScript(this)">
+    <div><div class="script-header-title">Competitor comparison — "X is cheaper"</div><div class="script-context">Zoho, Tally, free tools — you'll hear this constantly</div></div>
+    <span style="font-size:12px;color:#aaa;">›</span>
+  </div>
+  <div class="script-content">
+    <div class="script-line"><span class="script-speaker sp-them">Them</span><span class="script-line-text">"Zoho CRM does something similar for ₹1,500 a month."</span></div>
+    <div class="script-line"><span class="script-speaker sp-you">You</span><span class="script-line-text">"Zoho is a great product — for large teams with dedicated IT staff to configure it. Most of my clients tried Zoho first. What usually happened is they spent 2–3 months setting it up, it still didn't match their workflow, and they ended up back in Excel anyway."</span></div>
+    <div class="script-line"><span class="script-speaker sp-note">Note</span><span class="script-note-text">Never trash the competitor. Acknowledge strength, then reframe the context. "Great for X, not built for Y" is far more credible than "they're worse."</span></div>
+    <div class="script-line"><span class="script-speaker sp-you">You</span><span class="script-line-text">"Apex is built specifically for Indian SMBs — GST invoicing, HRMS for Indian compliance, supplier tracking. Not a global tool adapted for India. The ₹3,500 difference is the cost of not spending 3 months on implementation. Plus you have my direct number, not a ticketing system."</span></div>
+  </div>
+</div>
+
+<div class="script-scenario">
+  <div class="script-header" onclick="togScript(this)">
+    <div><div class="script-header-title">Asking for a raise / better rate (personal)</div><div class="script-context">Applies to salary, freelance rate, partnership terms</div></div>
+    <span style="font-size:12px;color:#aaa;">›</span>
+  </div>
+  <div class="script-content">
+    <div class="script-line"><span class="script-speaker sp-note">Setup</span><span class="script-note-text">Research the market rate first. Know your number. Have a BATNA (another offer, another client, the ability to walk away). Without these, you're negotiating from weakness.</span></div>
+    <div class="script-line"><span class="script-speaker sp-you">You</span><span class="script-line-text">"I've been tracking my output this past 6 months and I think there's a conversation worth having about my rate. Based on current market rates for what I deliver, I should be at ₹X. I'd like to get there."</span></div>
+    <div class="script-line"><span class="script-speaker sp-note">Note</span><span class="script-note-text">State the number. Don't ask "what do you think about a raise?" — that invites a counter before you've even anchored. State the number, then stop talking.</span></div>
+    <div class="script-line"><span class="script-speaker sp-them">Them</span><span class="script-line-text">"That's a big jump. We can do ₹Y, which is more modest."</span></div>
+    <div class="script-line"><span class="script-speaker sp-you">You</span><span class="script-line-text">"I appreciate that. ₹Y gets us closer, but based on the market data I've looked at and the scope I'm currently covering, I need to stay at ₹X to make this work long-term. What would need to be true for us to get there?"</span></div>
+    <div class="script-line"><span class="script-speaker sp-note">Note</span><span class="script-note-text">"What would need to be true…" is a calibrated question that makes them solve your problem. You're not begging — you're problem-solving together.</span></div>
+  </div>
+</div>
+
+<div class="btns">
+  <button class="ask-btn" onclick="sendPrompt('Write me a negotiation script for onboarding a CA firm as an Apex white-label reseller')">CA firm reseller script ↗</button>
+  <button class="ask-btn" onclick="sendPrompt('Write a negotiation script for closing a StockLens cohort sale over WhatsApp')">StockLens close script ↗</button>
+</div>
+</div>
+
+<!-- ═══ PANEL 5: LAWS ═══ -->
+<div class="panel" id="p5">
+<p class="sec-label">The 10 immutable laws of negotiation</p>
+<div class="law-grid">
+  <div class="law-item"><div class="law-num">1</div><div><div class="law-title">Everything is negotiable</div><div class="law-text">Price, timeline, scope, payment terms, onboarding support, contract length, add-ons. If someone set the terms, someone can change them. The person who believes the terms are fixed loses before the conversation starts.</div><div class="law-apex">Apex application: "Standard price is ₹5,000/mo" is your opening — not your floor.</div></div></div>
+  <div class="law-item"><div class="law-num">2</div><div><div class="law-title">Preparation beats talent</div><div class="law-text">The negotiator who knows their numbers, knows the other side's alternatives, and has walked through scenarios in advance will consistently beat the "naturally gifted" talker who wings it. Spend 3 hours preparing for a 30-minute negotiation.</div><div class="law-apex">Apex application: Know the prospect's industry before the discovery call. Know what Zoho and Tally charge. Know your cost floor.</div></div></div>
+  <div class="law-item"><div class="law-num">3</div><div><div class="law-title">Whoever cares less wins</div><div class="law-text">Emotional detachment is a structural advantage. The moment the other side senses you need this deal, they have leverage. Build your BATNA specifically so you can walk away and genuinely mean it. The walk-away is the weapon; use it rarely but always have it loaded.</div></div></div>
+  <div class="law-item"><div class="law-num">4</div><div><div class="law-title">Never give without getting</div><div class="law-text">Every concession must be traded, never gifted. "I can do ₹4,000 if we lock in a 12-month contract" is a trade. "I can do ₹4,000" is a gift that destroys your anchoring position and signals you were padding in the first place.</div><div class="law-apex">Apex application: Lower price = annual commitment, or reduced scope, or delayed start date. Never just lower the number.</div></div></div>
+  <div class="law-item"><div class="law-num">5</div><div><div class="law-title">The person who names a number first sets the range</div><div class="law-text">The anchor effect is one of the most robust findings in behavioral psychology. First movers in price negotiations consistently get better outcomes. Waiting for the other side to name a number first only helps if they anchor low — and experienced negotiators won't.</div></div></div>
+  <div class="law-item"><div class="law-num">6</div><div><div class="law-title">Questions are more powerful than statements</div><div class="law-text">"How are you supposed to do that at ₹2,000?" is more powerful than "₹2,000 doesn't work." Questions force the other side into your frame. Statements invite counterstatements. Questions invite thinking — and thinking people often talk themselves into your position.</div></div></div>
+  <div class="law-item"><div class="law-num">7</div><div><div class="law-title">Liking is leverage</div><div class="law-text">People give better deals to people they like. This isn't manipulation — it's reality. Invest 5 minutes in genuine rapport before every negotiation. Find something real to connect on. A person who sees you as a human being negotiates differently than one who sees you as a vendor number.</div></div></div>
+  <div class="law-item"><div class="law-num">8</div><div><div class="law-title">Written beats verbal</div><div class="law-text">Verbal agreements dissolve. Write down every agreement in real time — even a WhatsApp message summary after the call counts. "Just to confirm what we agreed: ₹4,500/mo starting June 1, 12-month term, data migration included." This prevents revisiting settled points and creates accountability.</div></div></div>
+  <div class="law-item"><div class="law-num">9</div><div><div class="law-title">Patience is a superpower</div><div class="law-text">Deadlines move deals — usually toward the impatient party. If you can outlast the other side's urgency, the deal moves in your direction. Never rush a negotiation you're winning. Never panic in one you're losing.</div></div></div>
+  <div class="law-item"><div class="law-num">10</div><div><div class="law-title">The best deal is one they want to honor</div><div class="law-text">A deal won through pressure, manipulation, or information asymmetry will be poorly executed, resented, or walked back. The best negotiators leave the other side feeling good about the outcome. That's not idealism — it's retention, referrals, and reputation.</div><div class="law-apex">Apex application: A client who felt heard and fairly treated becomes your best case study and referral source.</div></div></div>
+</div>
+<div class="btns">
+  <button class="ask-btn" onclick="sendPrompt('Now teach me how to earn from the stock market — strategies, setups, and execution')">Stock market income strategy ↗</button>
+  <button class="ask-btn" onclick="sendPrompt('How do I negotiate equity or partnership terms when bringing on a co-founder or key hire?')">Equity negotiation ↗</button>
+</div>
+</div>
+
+</div>
+<script>
+function sw(i){
+  document.querySelectorAll('.ntab').forEach((t,j)=>t.classList.toggle('on',i===j));
+  document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('on',i===j));
+}
+
+const prins=[
+  {title:'Information is leverage',points:['Research the other party before any negotiation. Their current vendors, their pain points, their budget signals, their alternatives. Every piece of information is a card.','In a sales negotiation: knowing a prospect uses Tally and struggles with GST reconciliation before the call means you can open with the exact pain — not discover it mid-conversation.','Ask more questions than you answer. Every answer they give is intelligence. Every answer you give is intelligence you\'re giving away.','In salary / rate negotiations: know market rates for your exact role in your exact geography before walking in. Without this, you\'re guessing against someone who isn\'t.'],example:'"We noticed you\'re still using Excel for inventory tracking." — said at the start of a demo, this tells the prospect you\'ve done your homework. It shifts them from skeptic to engaged immediately.'},
+  {title:'Never negotiate against yourself',points:['After you state a price or a position — stop talking. Completely. Do not justify, do not soften, do not add caveats. Every word you add after your number weakens it.','The most common mistake: "₹5,000 a month — but obviously we can be flexible, it depends on your needs, we could probably look at something around ₹3,500 if that works better…" — you just negotiated against yourself before they said a word.','Silence feels uncomfortable. That discomfort is asymmetric: it feels worse for the person who just heard the number than for the person who said it. Sit in it.','The rule: you speak, they speak. You make an offer, they respond. Never speak twice in a row in a negotiation.'],example:'You: "₹5,000 a month." [silence] Client: "That seems high…" You: [silence, then] "Help me understand what\'s making it feel that way." — you\'ve given nothing. They\'re moving toward you.'},
+  {title:'Anchor first, anchor high',points:['Every negotiation has a range. The final number almost always lands in the middle of wherever the conversation started. The anchor is the starting point — whoever sets it controls the range.','Anchoring works even when people know it\'s happening. This is the remarkable thing: even trained negotiators are influenced by anchors. It\'s not a trick — it\'s how human cognition processes relative value.','Your anchor must be defensible. "₹10,000/mo" with no justification loses credibility. "₹8,000/mo — this covers full suite including HRMS, mobile app, and priority onboarding" is anchored with value context.','The right anchor: 20–40% above your target. Too far above = laughed off and credibility lost. Too close = no room to move and they feel no win.'],example:'Target: ₹5,000/mo. Anchor: ₹7,500/mo ("full suite with mobile, all modules, priority support"). Client negotiates to ₹5,500. They feel they won ₹2,000. You hit your target. Both sides satisfied.'},
+  {title:'BATNA is your true power',points:['BATNA = Best Alternative To a Negotiated Agreement. It\'s what you do if this deal doesn\'t close. The stronger your BATNA, the less you need this specific deal. The less you need it, the more power you have.','Weak BATNA: "If this client doesn\'t sign, I have no other pipeline." You will make concessions you shouldn\'t. They will sense the desperation.','Strong BATNA: "I have 3 other demos this week and 2 warm leads." You negotiate with genuine indifference to the outcome. That indifference is palpable — and powerful.','Before any significant negotiation: actively improve your BATNA. Schedule more demos. Create competing timelines. Never enter a negotiation with no walk-away option.'],example:'When you tell a prospect "I have limited onboarding slots this month" — that\'s only credible if it\'s true, and it\'s only true if you\'ve built a real pipeline. BATNA isn\'t a script — it\'s a position you build before you walk in.'},
+  {title:'Make them feel heard first',points:['Tactical empathy is not sympathy. You don\'t have to agree with their position. You have to demonstrate that you understand it — deeply, specifically, emotionally.','People make decisions when they feel understood. Until they feel heard, they are in a defensive posture. Defensive people don\'t sign contracts.','Label their emotion before addressing it: "It sounds like you\'ve had bad experiences with software that promised a lot and underdelivered." This is not a concession — it\'s a door-opener.','The sequence: listen → label their feeling → confirm → then address. Never address first. People who feel unheard escalate. People who feel heard negotiate.'],example:'"It sounds like the real concern isn\'t the price — it\'s whether this will actually work for your team, given what you\'ve tried before." [pause] Client: "Exactly. That\'s exactly it." — now you\'re solving the real problem.'},
+  {title:'Never split the difference',points:['Meeting in the middle sounds fair. But it isn\'t — it\'s lazy. It means both sides left value on the table. The person who suggested splitting the difference almost always benefits more.','When someone says "let\'s just split it" — that\'s a tactic, not a peace offering. It means they know they can\'t get more, so they want to guarantee getting half.','Instead of splitting: trade. "I can\'t move on price, but I can add 2 months of free support." Or: "I\'ll go to ₹4,500 but only on a 12-month contract." You trade, never split.','The only time to split: when the remaining gap is genuinely trivial and goodwill is more valuable than the money. Never as a default.'],example:'They\'re at ₹3,000, you\'re at ₹6,000. Splitting gives ₹4,500 with no commitment. Trading gives: ₹4,500 + 12-month contract + data migration included. Same number, completely different value.'},
+  {title:'Time is a weapon',points:['Urgency moves people. Deadlines — real or structural — force decisions. Without a deadline, "I\'ll think about it" becomes "I forgot about it."','The key is authenticity. A fake deadline ("offer expires Friday") that you then extend kills credibility. A structural deadline ("I\'m onboarding 2 clients this week and have 1 slot left") is real and powerful.','Time works both ways. If you\'re buying or negotiating terms, waiting often works in your favor — the other side\'s urgency increases over time, especially at end of quarter or end of month.','The best salespeople know: the prospect who "needs to think about it" is most likely to decide when there\'s a real consequence for delay. Your job is to create or reveal that consequence.'],example:'End of month close: "I\'m reviewing pricing next week and rates are going up 15% in Q3 as we add new modules. If we can close this week, I can lock you in at the current price." Real. Creates genuine urgency. Not manipulation.'},
+  {title:'Framing controls perception',points:['The same fact can be presented in ways that feel completely different. ₹5,000/mo = ₹167/day = the cost of one staff meeting = less than a part-time admin. Same number. Completely different emotional response.','Loss frames are more powerful than gain frames. "You\'re losing ₹6,000 a month in wasted billing time" hits harder than "you\'ll save ₹6,000 a month." Humans are more motivated to avoid loss than to achieve gain (Kahneman\'s prospect theory).','Frame your product as a category of one: not "a CRM" but "the only CRM built specifically for Indian SMBs with GST compliance built in." Comparison becomes harder.','Frame concessions as conditional: "I can do ₹4,500 if we go annual" — not "I\'ll lower the price." One is a trade. One is a discount. Trades preserve value; discounts destroy it.'],example:'"Your accountant currently spends 6 hours a week on reconciliation. At ₹400/hour, that\'s ₹9,600 a month. Apex costs ₹5,000. You\'re not spending money — you\'re netting ₹4,600 a month." The price hasn\'t changed. The frame has.'},
+  {title:'Let them say "no" first',points:['"No" gives people a sense of control and safety. People who feel safe are more likely to say yes. Counterintuitively, inviting "no" is one of the fastest paths to "yes."','Chris Voss\'s insight: "Is now a bad time to talk?" gets more positive responses than "Do you have a minute?" — because it lets people say no, making them feel in control.','Use "no"-oriented questions: "Would it be ridiculous to…?" / "Is it crazy to think that…?" These give the other side an easy exit, which paradoxically makes them more likely to stay in.','When you\'ve heard nothing for a while, re-engage with: "Have you given up on solving the billing problem?" — "No" re-opens the conversation and re-commits them to the problem.'],example:'"Would it be out of the question to try Apex for 30 days before deciding?" The framing invites "no" — but saying "no" to a free trial means saying "I don\'t want to solve my problem." Almost no one says that.'}
+];
+
+function showPrin(i){
+  document.querySelectorAll('.pcard').forEach((c,j)=>c.classList.toggle('sel',i===j));
+  const d=prins[i];
+  const box=document.getElementById('prin-detail');
+  box.style.display='block';
+  box.innerHTML=`<div class="expand-title">${d.title}</div>${d.points.map(p=>`<div class="expand-row"><div class="expand-dot"></div><div>${p}</div></div>`).join('')}<div class="expand-example"><div class="expand-example-label">In practice</div>${d.example}</div>`;
+}
+
+function togTac(el){
+  const b=el.querySelector('.tac-body');
+  const a=el.querySelector('.tac-arrow');
+  const open=b.classList.toggle('open');
+  a.classList.toggle('open',open);
+}
+
+const simData=[
+  {opt:'A',type:'bad',result:'<div class="result-bad"><strong>Weak move.</strong> You just reduced your price by 60% before any pushback. You\'ve signalled that your original price was inflated. Rajesh now knows any number you give is negotiable by 60%. He\'ll push further — and why wouldn\'t he? You also gave away value with no commitment in return. Never discount without getting something back.</div>'},
+  {opt:'B',type:'neutral',result:'<div class="result-neutral"><strong>Acceptable, but passive.</strong> Holding ₹3,500 is better than caving to ₹2,000. But you gave up ₹1,500 immediately, before even understanding why he said ₹2,000. Was ₹2,000 his real limit, or a test anchor? You don\'t know — because you didn\'t ask.</div>'},
+  {opt:'C',type:'good',result:'<div class="result-good"><strong>Strong move.</strong> You\'ve used tactical empathy and a calibrated question. "₹2,000 isn\'t something we can work with" is a statement. "Help me understand" is a question that gets information. Maybe ₹5,000 is a cash-flow issue (→ offer deferred start or quarterly billing). Maybe it\'s a value doubt (→ demo more ROI). You can\'t solve the right problem until you know which one it is.</div><button class="sim-next" onclick="loadSim2()">Next scenario →</button>'}
+];
+
+const sim2Data=[
+  {opt:'A',type:'bad',result:'<div class="result-bad"><strong>Never match on price alone.</strong> You don\'t even know what the competitor offers. You just cut your price by 42% based on a claim you haven\'t verified. Sunita may be bluffing. The competitor may offer 30% less features. You gave away ₹2,500/mo in revenue before asking a single question.</div>'},
+  {opt:'B',type:'neutral',result:'<div class="result-neutral"><strong>Reasonable, but defensive.</strong> This puts you in feature-comparison mode, which is vulnerable. Competitors can always find a feature they do. Better to understand what Sunita actually values before launching into a comparison. You\'re fighting on the wrong battlefield.</div>'},
+  {opt:'C',type:'good',result:'<div class="result-good"><strong>Expert move.</strong> You\'ve shifted the frame entirely. Instead of defending your price, you\'re discovering her decision criteria. If she says "mainly the HRMS and compliance features" — you know exactly what to emphasize and how to frame the price difference. If she says "mainly price" — now you have a real conversation about budget. Let her reveal what she values before you fight for it.</div>'}
+];
+
+function simAnswer(i){
+  const d=simData[i];
+  document.getElementById('sim-opts').style.display='none';
+  const r=document.getElementById('sim-result');
+  r.innerHTML=d.result;
+  r.classList.add('show');
+}
+function loadSim2(){
+  document.getElementById('sim2').style.display='block';
+  document.getElementById('sim2').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function sim2Answer(i){
+  const d=sim2Data[i];
+  document.getElementById('sim2-opts').style.display='none';
+  const r=document.getElementById('sim2-result');
+  r.innerHTML=d.result;
+  r.classList.add('show');
+}
+
+function togScript(header){
+  const content=header.nextElementSibling;
+  const arrow=header.querySelector('span:last-child');
+  const open=content.classList.toggle('open');
+  arrow.textContent=open?'˅':'›';
+}
+</script>
+</body>
+</html>
